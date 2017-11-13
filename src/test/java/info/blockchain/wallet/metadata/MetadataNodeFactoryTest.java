@@ -20,6 +20,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
+@SuppressWarnings("deprecation")
 public class MetadataNodeFactoryTest {
 
     String masterKeyHex = "cbf9a5a77a913ee6cbdd560510c8d40020431479edb582e81262cc5e14fdc921";
@@ -115,16 +116,14 @@ public class MetadataNodeFactoryTest {
 
     @Test
     public void isLegacySecondPwNodeAvailable_No() throws Exception {
-        mockInterceptor.setResponseCode(404);
-        mockInterceptor.setResponseString("{\"message\":\"Not Found\"}");
+        mockInterceptor.setResponse(404, "{\"message\":\"Not Found\"}");
         Assert.assertFalse(metadataNodeFactory.isLegacySecondPwNodeAvailable());
     }
 
     @Test
     public void isLegacySecondPwNodeAvailable_Yes() throws Exception {
 
-        mockInterceptor.setResponseCode(200);
-        mockInterceptor.setResponseString("{\"payload\":\"+5tmcealT370Tg5vrQvMDdwGAZalLuldMBrBqloGXXKgsAEHOU/lp5u2RPAcXf7eL3KY5pm0u5bI+Nl/jGJMKM7gdpnsu2gt0EWfQFh47Bv71syZlZuYqt+b9aAUWQAaqPDmF6lbFe8xR7x327LoeUslCadliSX4vepDFedp+JoahIE2jE2aTNFs1ZN4NRWIbX1GkWXchkEF85G4BPcyfgdFns8vXvqbN5nBs0wLhrXaU+wSrzrRKOhp6YTP+M1KV8Haotv9g5rbCCLlze8xHQBL32130p0QaOVUl+0A3BfUS4HhaSpaGuaISbd9HjLHWdpijXPkd/b4qI5r0oCbm/5CmlIn/uXd3zQvnIvX4pQ=\",\"version\":1,\"type_id\":-1,\"signature\":\"IPf6iER8EdI1nqT2LQGA4m4E3iorK7fnrKnaUQwckzU7EI0L0XegV0Qo3I1uuFoUZnOx42gz7uYuim4jpVp/NYw=\",\"prev_magic_hash\":\"8cd2723102abbbfaeb0bd5f6e848877693156cf60b08ac73799bcb2dd061a751\",\"address\":\"1MnKyRWkoYue7qeAoDDbXDASSqf288nv8n\",\"created_at\":1501675160000,\"updated_at\":1501675233000}");
+        mockInterceptor.setResponse(200, "{\"payload\":\"+5tmcealT370Tg5vrQvMDdwGAZalLuldMBrBqloGXXKgsAEHOU/lp5u2RPAcXf7eL3KY5pm0u5bI+Nl/jGJMKM7gdpnsu2gt0EWfQFh47Bv71syZlZuYqt+b9aAUWQAaqPDmF6lbFe8xR7x327LoeUslCadliSX4vepDFedp+JoahIE2jE2aTNFs1ZN4NRWIbX1GkWXchkEF85G4BPcyfgdFns8vXvqbN5nBs0wLhrXaU+wSrzrRKOhp6YTP+M1KV8Haotv9g5rbCCLlze8xHQBL32130p0QaOVUl+0A3BfUS4HhaSpaGuaISbd9HjLHWdpijXPkd/b4qI5r0oCbm/5CmlIn/uXd3zQvnIvX4pQ=\",\"version\":1,\"type_id\":-1,\"signature\":\"IPf6iER8EdI1nqT2LQGA4m4E3iorK7fnrKnaUQwckzU7EI0L0XegV0Qo3I1uuFoUZnOx42gz7uYuim4jpVp/NYw=\",\"prev_magic_hash\":\"8cd2723102abbbfaeb0bd5f6e848877693156cf60b08ac73799bcb2dd061a751\",\"address\":\"1MnKyRWkoYue7qeAoDDbXDASSqf288nv8n\",\"created_at\":1501675160000,\"updated_at\":1501675233000}");
         Assert.assertTrue(metadataNodeFactory.isLegacySecondPwNodeAvailable());
     }
 }

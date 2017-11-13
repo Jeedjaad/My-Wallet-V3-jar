@@ -12,6 +12,7 @@ import info.blockchain.wallet.shapeshift.data.TradeStatusResponse;
 import io.reactivex.observers.TestObserver;
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class ShapeShiftApiTest extends MockedResponseTest {
 
     private ShapeShiftApi subject = new ShapeShiftApi();

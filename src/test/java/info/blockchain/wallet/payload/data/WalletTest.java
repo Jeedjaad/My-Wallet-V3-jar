@@ -29,6 +29,7 @@ WalletBase
             |
             |__Wallet
  */
+@SuppressWarnings("deprecation")
 public class WalletTest extends MockedResponseTest{
 
     @Test

@@ -39,6 +39,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
+@SuppressWarnings("deprecation")
 public class ContactsTest {
 
     MockInterceptor mockInterceptor;
@@ -155,10 +156,10 @@ public class ContactsTest {
         Contact contact = new Contact();
         contact.setName("John");
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add(success);//add contact response
-        responseList.add(success);//save response
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, success));//add contact response
+        responseList.add(Pair.of(200, success));//save response
+        mockInterceptor.setResponseList(responseList);
 
         contacts.addContact(contact);
         contacts.save();
@@ -197,10 +198,10 @@ public class ContactsTest {
         Contact contact = new Contact();
         contact.setName("John");
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add(success);//add contact
-        responseList.add(success);//wipe
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, success));//add contact
+        responseList.add(Pair.of(200, success));//wipe
+        mockInterceptor.setResponseList(responseList);
 
         contacts.addContact(contact);
         contacts.wipe();
@@ -244,11 +245,11 @@ public class ContactsTest {
 
         Contacts contacts = init();
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add(success);//addContact
-        responseList.add(success);//addContact
-        responseList.add(success);//setContactList save
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, success));//addContact
+        responseList.add(Pair.of(200, success));//addContact
+        responseList.add(Pair.of(200, success));//setContactList save
+        mockInterceptor.setResponseList(responseList);
 
         contacts.addContact(new Contact());
         contacts.addContact(new Contact());
@@ -265,11 +266,11 @@ public class ContactsTest {
 
         Contacts contacts = init();
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add(success);//addContact
-        responseList.add(success);//addContact
-        responseList.add(fail);//setContactList save
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, success));//addContact
+        responseList.add(Pair.of(200, success));//addContact
+        responseList.add(Pair.of(500, fail));//setContactList save
+        mockInterceptor.setResponseList(responseList);
 
         contacts.addContact(new Contact());
         contacts.addContact(new Contact());
@@ -297,10 +298,10 @@ public class ContactsTest {
 
         Contacts contacts = init();
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add(success);//addContact
-        responseList.add(success);//addContact
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, success));//addContact
+        responseList.add(Pair.of(200, success));//addContact
+        mockInterceptor.setResponseList(responseList);
 
         contacts.addContact(new Contact());
 
@@ -318,11 +319,11 @@ public class ContactsTest {
 
         Contacts contacts = init();
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add(success);//addContact
-        responseList.add(success);//addContact
-        responseList.add(success);//removeContact
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, success));//addContact
+        responseList.add(Pair.of(200, success));//addContact
+        responseList.add(Pair.of(200, success));//removeContact
+        mockInterceptor.setResponseList(responseList);
 
         contacts.addContact(c1);
         contacts.addContact(c2);

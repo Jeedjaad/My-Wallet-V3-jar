@@ -24,6 +24,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("deprecation")
 public class PaymentTest extends MockedResponseTest {
 
     private Payment subject = new Payment();
@@ -134,8 +135,7 @@ public class PaymentTest extends MockedResponseTest {
     @Test
     public void getCoins_NoFreeOutputs() throws Exception {
 
-        mockInterceptor.setResponseString("No free outputs to spend");
-        mockInterceptor.setResponseCode(500);
+        mockInterceptor.setResponse(500, "No free outputs to spend");
         Call<UnspentOutputs> unspentOutputs = subject.getUnspentCoins(new ArrayList<String>());
         Response<UnspentOutputs> exe = unspentOutputs.execute();
 
@@ -448,8 +448,7 @@ public class PaymentTest extends MockedResponseTest {
         payment.signSimpleTransaction(tx, keys);
         assertEquals("efe67d55f73c187447f7fbae66e6daf126efce20ca9b13897b5e81f8cabee639", tx.getHashAsString());
 
-        mockInterceptor.setResponseString("An outpoint is already spent in [DBBitcoinTx{txIndex=218401014, ip=127.0.0.1, time=1486398252, size=191, distinctIn=null, distinctOut=null, note='null', blockIndexes=[], nTxInput=1, nTxOutput=1}] [OutpointImpl{txIndex=218376099, txOutputN=0}]");
-        mockInterceptor.setResponseCode(500);
+        mockInterceptor.setResponse(500,"An outpoint is already spent in [DBBitcoinTx{txIndex=218401014, ip=127.0.0.1, time=1486398252, size=191, distinctIn=null, distinctOut=null, note='null', blockIndexes=[], nTxInput=1, nTxOutput=1}] [OutpointImpl{txIndex=218376099, txOutputN=0}]");
         Call<ResponseBody> call = payment.publishSimpleTransaction(tx);
 
         assertTrue(call.execute().errorBody().string().contains("An outpoint is already spent in"));

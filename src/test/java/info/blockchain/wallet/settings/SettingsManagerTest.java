@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import retrofit2.Call;
 
+@SuppressWarnings("deprecation")
 public class SettingsManagerTest extends MockedResponseTest {
 
     private String guid = "49819a7c-2426-49da-90fd-9dabbd837cc8";

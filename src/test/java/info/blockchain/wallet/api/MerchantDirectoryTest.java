@@ -14,6 +14,7 @@ import java.util.List;
 
 import io.reactivex.observers.TestObserver;
 
+@SuppressWarnings("deprecation")
 public class MerchantDirectoryTest extends MockedResponseTest {
 
     @Test

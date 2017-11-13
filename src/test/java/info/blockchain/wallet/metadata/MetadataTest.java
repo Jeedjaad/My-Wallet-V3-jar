@@ -23,6 +23,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
+@SuppressWarnings("deprecation")
 public class MetadataTest {
 
     boolean isEncrypted = false;
@@ -99,8 +100,7 @@ public class MetadataTest {
 
         String address = "12sC9tqHzAhdoukhCbTnyx2MjYXNXBGHnF";
 
-        mockInterceptor.setResponseString("{\"message\":\"Not Found\"}");
-        mockInterceptor.setResponseCode(404);
+        mockInterceptor.setResponse(404, "{\"message\":\"Not Found\"}");
 
         DeterministicKey metaDataHDNode = MetadataUtil.deriveMetadataNode(getWallet().getMasterKey());
 
@@ -114,8 +114,7 @@ public class MetadataTest {
     @Test
     public void testMetadata() throws Exception{
 
-        mockInterceptor.setResponseString("{\"message\":\"Not Found\"}");
-        mockInterceptor.setResponseCode(404);//New metadata response
+        mockInterceptor.setResponse(404, "{\"message\":\"Not Found\"}");//New metadata response
 
         DeterministicKey metaDataHDNode = MetadataUtil.deriveMetadataNode(getWallet().getMasterKey());
 
@@ -124,33 +123,27 @@ public class MetadataTest {
                 .build();
 
         String msg = "Rage rage";
-        mockInterceptor.setResponseString("{\"version\":1,\"payload\":\"UmFnZSByYWdl\",\"signature\":\"HwIx4Cs+1pB+8iCDREC1PiDqkDnEDhfcto6bQjxzo3RrHB562kg8nTjbFoaydlUI6tDkl3WnZahrmFZ8ErNqmBY=\",\"type_id\":1}");
-        mockInterceptor.setResponseCode(200);
+        mockInterceptor.setResponse(200, "{\"version\":1,\"payload\":\"UmFnZSByYWdl\",\"signature\":\"HwIx4Cs+1pB+8iCDREC1PiDqkDnEDhfcto6bQjxzo3RrHB562kg8nTjbFoaydlUI6tDkl3WnZahrmFZ8ErNqmBY=\",\"type_id\":1}");
         metadata.putMetadata(new PublicContactDetails("mock").toJson());
 
-        mockInterceptor.setResponseString("{\"payload\":\"UmFnZSByYWdl\",\"version\":1,\"type_id\":1,\"signature\":\"HwIx4Cs+1pB+8iCDREC1PiDqkDnEDhfcto6bQjxzo3RrHB562kg8nTjbFoaydlUI6tDkl3WnZahrmFZ8ErNqmBY=\",\"created_at\":1480592845000,\"updated_at\":1480592845000,\"address\":\"1ErzrzB1FE1YyQ7LADMzye9J3Q8QeR1mja\"}");
-        mockInterceptor.setResponseCode(200);
+        mockInterceptor.setResponse(200,"{\"payload\":\"UmFnZSByYWdl\",\"version\":1,\"type_id\":1,\"signature\":\"HwIx4Cs+1pB+8iCDREC1PiDqkDnEDhfcto6bQjxzo3RrHB562kg8nTjbFoaydlUI6tDkl3WnZahrmFZ8ErNqmBY=\",\"created_at\":1480592845000,\"updated_at\":1480592845000,\"address\":\"1ErzrzB1FE1YyQ7LADMzye9J3Q8QeR1mja\"}");
         String result1 = metadata.getMetadata();
 
         Assert.assertTrue(msg.equals(result1));
 
-        mockInterceptor.setResponseString("{\"version\":1,\"payload\":\"UmFnZSByYWdlIHNvbWUgbW9yZQ==\",\"signature\":\"H7zIO7fzkb8t+zdbiEzlKt/8InFjH5N2ja+SaJPcAuheP3soAJwxVrnzG0tDQpxyJKSgYn/9il6XsLW3rmm3a+g=\",\"prev_magic_hash\":\"73d03136dfdadf66b4048f938ad8acf6084134a84ac6f542e0144b29999a6836\",\"type_id\":1}");
-        mockInterceptor.setResponseCode(200);
+        mockInterceptor.setResponse(200,"{\"version\":1,\"payload\":\"UmFnZSByYWdlIHNvbWUgbW9yZQ==\",\"signature\":\"H7zIO7fzkb8t+zdbiEzlKt/8InFjH5N2ja+SaJPcAuheP3soAJwxVrnzG0tDQpxyJKSgYn/9il6XsLW3rmm3a+g=\",\"prev_magic_hash\":\"73d03136dfdadf66b4048f938ad8acf6084134a84ac6f542e0144b29999a6836\",\"type_id\":1}");
         msg = "Rage rage some more";
         metadata.putMetadata(new PublicContactDetails("mock").toJson());
 
-        mockInterceptor.setResponseString("{\"payload\":\"UmFnZSByYWdlIHNvbWUgbW9yZQ==\",\"version\":1,\"type_id\":1,\"signature\":\"H7zIO7fzkb8t+zdbiEzlKt/8InFjH5N2ja+SaJPcAuheP3soAJwxVrnzG0tDQpxyJKSgYn/9il6XsLW3rmm3a+g=\",\"prev_magic_hash\":\"73d03136dfdadf66b4048f938ad8acf6084134a84ac6f542e0144b29999a6836\",\"created_at\":1480592845000,\"updated_at\":1480592845000,\"address\":\"1ErzrzB1FE1YyQ7LADMzye9J3Q8QeR1mja\"}");
-        mockInterceptor.setResponseCode(200);
+        mockInterceptor.setResponse(200,"{\"payload\":\"UmFnZSByYWdlIHNvbWUgbW9yZQ==\",\"version\":1,\"type_id\":1,\"signature\":\"H7zIO7fzkb8t+zdbiEzlKt/8InFjH5N2ja+SaJPcAuheP3soAJwxVrnzG0tDQpxyJKSgYn/9il6XsLW3rmm3a+g=\",\"prev_magic_hash\":\"73d03136dfdadf66b4048f938ad8acf6084134a84ac6f542e0144b29999a6836\",\"created_at\":1480592845000,\"updated_at\":1480592845000,\"address\":\"1ErzrzB1FE1YyQ7LADMzye9J3Q8QeR1mja\"}");
         String result2 = metadata.getMetadata();
         Assert.assertTrue(msg.equals(result2));
 
-        mockInterceptor.setResponseString("{\"status\": \"success\"}");
-        mockInterceptor.setResponseCode(200);
+        mockInterceptor.setResponse(200,"{\"status\": \"success\"}");
         mockInterceptor.setResponseString("");
         metadata.deleteMetadata(msg);
 
-        mockInterceptor.setResponseString("{\"message\":\"Not Found\"}");
-        mockInterceptor.setResponseCode(404);
+        mockInterceptor.setResponse(404,"{\"message\":\"Not Found\"}");
         Assert.assertNull(metadata.getMetadata());
     }
 }

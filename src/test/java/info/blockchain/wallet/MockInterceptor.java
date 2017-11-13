@@ -20,8 +20,7 @@ public class MockInterceptor implements Interceptor {
 
     static MockInterceptor instance;
 
-    LinkedList<String> responseStringList;
-    LinkedList<Integer> responseCodeList;
+    LinkedList<Pair<Integer, String>> responseList;
     boolean ioException = false;
 
     private MockInterceptor() {
@@ -33,27 +32,6 @@ public class MockInterceptor implements Interceptor {
             instance = new MockInterceptor();
         }
         return instance;
-    }
-
-    public void setResponseStringList(LinkedList<String> responseStringList){
-        this.responseStringList = responseStringList;
-    }
-
-    public void setResponseString(String response) {
-
-        this.responseStringList = new LinkedList<>();
-        this.responseStringList.add(response);
-    }
-
-    @Deprecated
-    public void setResponseCodeList(LinkedList<Integer> responseCodeList){
-        this.responseCodeList = responseCodeList;
-    }
-
-    public void setResponseCode(int responseCode) {
-
-        this.responseCodeList = new LinkedList<>();
-        this.responseCodeList.add(responseCode);
     }
 
     public void setIOException(boolean throwException){
@@ -70,20 +48,16 @@ public class MockInterceptor implements Interceptor {
         final String query = uri.query();
         final String method = chain.request().method();
 
-        String responseString = null;
+        String responseString;
+        int responseCode;
 
-        try {
-            responseString = responseStringList.getFirst();
-        } catch (NoSuchElementException e) {
-            log.error("Missing mock response", e);
+        if(!responseList.isEmpty()) {
+            responseString = responseList.getFirst().getRight();
+            responseCode = responseList.getFirst().getLeft();
+        } else {
+            responseString = "{}";
+            responseCode = 200;
         }
-
-        if(responseCodeList == null || responseCodeList.size() == 0) {
-            responseCodeList = new LinkedList<>();
-            responseCodeList.add(200);
-        }
-
-        int responseCode = responseCodeList.getFirst();
 
         Response response = new Response.Builder()
                 .code(responseCode)
@@ -95,22 +69,30 @@ public class MockInterceptor implements Interceptor {
                 .build();
 
         //Reset responses
-        responseStringList.removeFirst();
-        responseCodeList.removeFirst();
+        if(!responseList.isEmpty()) {
+            responseList.removeFirst();
+        }
+
         ioException = false;
 
         return response;
     }
 
-    // TODO: 22/08/2017 Remove silly LinkedLists and fix A LOT of tests, then we can continue fixing the below method
+    public void setResponse(Integer code, String response) {
+
+        responseList = new LinkedList<>();
+        responseList.add(Pair.of(code, response));
+    }
+
     public void setResponseList(LinkedList<Pair> responseList) {
-
-        responseCodeList = new LinkedList<>();
-        responseStringList = new LinkedList<>();
-
-        for(Pair meh : responseList) {
-            responseCodeList.add((Integer) meh.getLeft());
-            responseStringList.add((String) meh.getRight());
+        this.responseList = new LinkedList<>();
+        for(Pair pair : responseList) {
+            this.responseList.add(Pair.of((Integer) pair.getLeft(), (String)pair.getRight()));
         }
+    }
+
+    @Deprecated
+    public void setResponseString(String response) {
+        setResponse(200, response);
     }
 }

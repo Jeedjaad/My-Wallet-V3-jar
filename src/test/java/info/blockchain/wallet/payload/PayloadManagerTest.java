@@ -26,6 +26,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class PayloadManagerTest extends MockedResponseTest {
 
     @After
@@ -41,13 +42,9 @@ public class PayloadManagerTest extends MockedResponseTest {
     @Test
     public void create() throws Exception {
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add("MyWallet save successful.");
-        //Responses for multi address, 'All' and individual xpub
-        responseList.add("{}");//multiaddress responses - not testing this so can be empty.
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, "MyWallet save successful."));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().create("My HDWallet", "name@email.com", "SomePassword");
 
         Wallet walletBody = PayloadManager.getInstance()
@@ -66,8 +63,7 @@ public class PayloadManagerTest extends MockedResponseTest {
     @Test(expected = ServerConnectionException.class)
     public void create_ServerConnectionException() throws Exception {
 
-        mockInterceptor.setResponseString("Save failed.");
-        mockInterceptor.setResponseCode(500);
+        mockInterceptor.setResponse(500,"Save failed.");
         PayloadManager.getInstance().create("My HDWallet", "name@email.com", "SomePassword");
     }
 
@@ -76,30 +72,17 @@ public class PayloadManagerTest extends MockedResponseTest {
 
         String mnemonic = "all all all all all all all all all all all all";
 
-        LinkedList<String> responseList = new LinkedList<>();
+        LinkedList<Pair> responseList = new LinkedList<>();
         //Responses for checking how many accounts to recover
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "balance/wallet_all_balance_1.txt").toURI())), Charset.forName("utf-8")));
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "balance/wallet_all_balance_2.txt").toURI())), Charset.forName("utf-8")));
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "balance/wallet_all_balance_3.txt").toURI())), Charset.forName("utf-8")));
-        responseList.add("HDWallet successfully synced with server");
+        responseList.add(Pair.of(200, new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "balance/wallet_all_balance_1.txt").toURI())), Charset.forName("utf-8"))));
+        responseList.add(Pair.of(200, new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "balance/wallet_all_balance_2.txt").toURI())), Charset.forName("utf-8"))));
+        responseList.add(Pair.of(200, new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "balance/wallet_all_balance_3.txt").toURI())), Charset.forName("utf-8"))));
+        responseList.add(Pair.of(200, "HDWallet successfully synced with server"));
 
-        //responses for initializing multi address
-        responseList.add("{}");//multiaddress responses - not testing this so can be empty.
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        mockInterceptor.setResponseList(responseList);
 
         PayloadManager.getInstance().recoverFromMnemonic(mnemonic, "My HDWallet", "name@email.com", "SomePassword");
 
@@ -173,12 +156,9 @@ public class PayloadManagerTest extends MockedResponseTest {
         String walletBase = new String(Files.readAllBytes(Paths.get(uri)),
             Charset.forName("utf-8"));
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add(walletBase);
-        responseList.add("{}");//multiaddress responses - not testing this so can be empty.
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, walletBase));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().initializeAndDecrypt("any", "any", "SomeTestPassword");
     }
 
@@ -189,8 +169,7 @@ public class PayloadManagerTest extends MockedResponseTest {
         String walletBase = new String(Files.readAllBytes(Paths.get(uri)),
             Charset.forName("utf-8"));
 
-        mockInterceptor.setResponseString(walletBase);
-        mockInterceptor.setResponseCode(500);
+        mockInterceptor.setResponse(500, walletBase);
         PayloadManager.getInstance().initializeAndDecrypt("any", "any", "SomeTestPassword");
     }
 
@@ -203,12 +182,9 @@ public class PayloadManagerTest extends MockedResponseTest {
     @Test
     public void save() throws Exception {
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add("MyWallet save successful.");
-        responseList.add("{}");//multiaddress responses - not testing this so can be empty.
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, "MyWallet save successful."));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().create("My HDWallet", "name@email.com", "SomePassword");
 
         mockInterceptor.setResponseString("MyWallet save successful.");
@@ -223,34 +199,22 @@ public class PayloadManagerTest extends MockedResponseTest {
     @Test
     public void addAccount() throws Exception {
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add("MyWallet save successful.");
-        responseList.add("{}");//multiaddress responses - not testing this so can be empty.
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, "MyWallet save successful."));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().create("My HDWallet", "name@email.com", "MyTestWallet");
 
         Assert.assertEquals(1, PayloadManager.getInstance().getPayload().getHdWallets().get(0).getAccounts().size());
 
         responseList = new LinkedList<>();
-        responseList.add("MyWallet save successful");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        responseList.add(Pair.of(200, "MyWallet save successful"));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().addAccount("Some Label", null);
         Assert.assertEquals(2, PayloadManager.getInstance().getPayload().getHdWallets().get(0).getAccounts().size());
 
         responseList = new LinkedList<>();
-        responseList.add("MyWallet save successful");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        responseList.add(Pair.of(200, "MyWallet save successful"));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().addAccount("Some Label", null);
         Assert.assertEquals(3, PayloadManager.getInstance().getPayload().getHdWallets().get(0).getAccounts().size());
 
@@ -259,37 +223,24 @@ public class PayloadManagerTest extends MockedResponseTest {
     @Test
     public void addLegacyAddress() throws Exception {
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add("MyWallet save successful.");
-        responseList.add("{}");//multiaddress responses - not testing this so can be empty.
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, "MyWallet save successful."));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().create("My HDWallet", "name@email.com", "MyTestWallet");
 
         Assert.assertEquals(0, PayloadManager.getInstance().getPayload().getLegacyAddressList().size());
 
         responseList = new LinkedList<>();
-        responseList.add("cb600366ef7a94b991aa04557fc1d9c272ba00df6b1d9791d71c66efa0ae7fe9");
-        responseList.add("MyWallet save successful");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        responseList.add(Pair.of(200, "cb600366ef7a94b991aa04557fc1d9c272ba00df6b1d9791d71c66efa0ae7fe9"));
+        responseList.add(Pair.of(200, "MyWallet save successful"));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().addLegacyAddress("Some Label", null);
         Assert.assertEquals(1, PayloadManager.getInstance().getPayload().getLegacyAddressList().size());
 
         responseList = new LinkedList<>();
-        responseList.add("3e2b33d63ba45320f42d2b1de6d7ebd3ea810c35348927fd34424fe9bc53c07a");
-        responseList.add("MyWallet save successful");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        responseList.add(Pair.of(200, "3e2b33d63ba45320f42d2b1de6d7ebd3ea810c35348927fd34424fe9bc53c07a"));
+        responseList.add(Pair.of(200, "MyWallet save successful"));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().addLegacyAddress("Some Label", null);
         Assert.assertEquals(2, PayloadManager.getInstance().getPayload().getLegacyAddressList().size());
 
@@ -298,24 +249,17 @@ public class PayloadManagerTest extends MockedResponseTest {
     @Test
     public void setKeyForLegacyAddress() throws Exception {
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add("MyWallet save successful.");
-        responseList.add("{}");//multiaddress responses - not testing this so can be empty.
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, "MyWallet save successful."));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().create("My HDWallet", "name@email.com", "MyTestWallet");
 
         Assert.assertEquals(0, PayloadManager.getInstance().getPayload().getLegacyAddressList().size());
 
         responseList = new LinkedList<>();
-        responseList.add("cb600366ef7a94b991aa04557fc1d9c272ba00df6b1d9791d71c66efa0ae7fe9");
-        responseList.add("MyWallet save successful");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        responseList.add(Pair.of(200, "cb600366ef7a94b991aa04557fc1d9c272ba00df6b1d9791d71c66efa0ae7fe9"));
+        responseList.add(Pair.of(200, "MyWallet save successful"));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().addLegacyAddress("Some Label", null);
         Assert.assertEquals(1, PayloadManager.getInstance().getPayload().getLegacyAddressList().size());
 
@@ -334,24 +278,17 @@ public class PayloadManagerTest extends MockedResponseTest {
     @Test
     public void setKeyForLegacyAddress_NoSuchAddressException() throws Exception {
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add("MyWallet save successful.");
-        responseList.add("{}");//multiaddress responses - not testing this so can be empty.
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, "MyWallet save successful."));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().create("My HDWallet", "name@email.com", "MyTestWallet");
 
         Assert.assertEquals(0, PayloadManager.getInstance().getPayload().getLegacyAddressList().size());
 
         responseList = new LinkedList<>();
-        responseList.add("cb600366ef7a94b991aa04557fc1d9c272ba00df6b1d9791d71c66efa0ae7fe9");
-        responseList.add("MyWallet save successful");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        responseList.add(Pair.of(200, "cb600366ef7a94b991aa04557fc1d9c272ba00df6b1d9791d71c66efa0ae7fe9"));
+        responseList.add(Pair.of(200, "MyWallet save successful"));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().addLegacyAddress("Some Label", null);
         Assert.assertEquals(1, PayloadManager.getInstance().getPayload().getLegacyAddressList().size());
 
@@ -362,13 +299,8 @@ public class PayloadManagerTest extends MockedResponseTest {
         ECKey ecKey = new ECKey();
 
         responseList = new LinkedList<>();
-        responseList.add("MyWallet save successful");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        responseList.add(Pair.of(200, "MyWallet save successful"));
+        mockInterceptor.setResponseList(responseList);
 
         LegacyAddress newlyAdded = PayloadManager.getInstance()
             .setKeyForLegacyAddress(ecKey, null);
@@ -384,24 +316,17 @@ public class PayloadManagerTest extends MockedResponseTest {
     @Test
     public void setKeyForLegacyAddress_saveFail_revert() throws Exception {
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add("MyWallet save successful.");
-        responseList.add("{}");//multiaddress responses - not testing this so can be empty.
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, "MyWallet save successful."));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().create("My HDWallet", "name@email.com", "MyTestWallet");
 
         Assert.assertEquals(0, PayloadManager.getInstance().getPayload().getLegacyAddressList().size());
 
         responseList = new LinkedList<>();
-        responseList.add("cb600366ef7a94b991aa04557fc1d9c272ba00df6b1d9791d71c66efa0ae7fe9");
-        responseList.add("MyWallet save successful");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        responseList.add("{}");
-        mockInterceptor.setResponseStringList(responseList);
+        responseList.add(Pair.of(200, "cb600366ef7a94b991aa04557fc1d9c272ba00df6b1d9791d71c66efa0ae7fe9"));
+        responseList.add(Pair.of(200, "MyWallet save successful"));
+        mockInterceptor.setResponseList(responseList);
         PayloadManager.getInstance().addLegacyAddress("Some Label", null);
         Assert.assertEquals(1, PayloadManager.getInstance().getPayload().getLegacyAddressList().size());
 
@@ -412,8 +337,7 @@ public class PayloadManagerTest extends MockedResponseTest {
             .fromPrivate(Base58.decode(legacyAddressBody.getPrivateKey()));
 
         legacyAddressBody.setPrivateKey(null);
-        mockInterceptor.setResponseCode(500);
-        mockInterceptor.setResponseString("Oops something went wrong");
+        mockInterceptor.setResponse(500, "Oops something went wrong");
         PayloadManager.getInstance().setKeyForLegacyAddress(ecKey,null);
 
         //Ensure private key reverted on save fail
@@ -426,18 +350,18 @@ public class PayloadManagerTest extends MockedResponseTest {
         URI uri = getClass().getClassLoader().getResource("wallet_v3_5.txt").toURI();
         String walletBase = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add(walletBase);
-        responseList.add("{}");
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "multiaddress/wallet_v3_5_m1.txt").toURI())), Charset.forName("utf-8")));
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "multiaddress/wallet_v3_5_m2.txt").toURI())), Charset.forName("utf-8")));
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "multiaddress/wallet_v3_5_m3.txt").toURI())), Charset.forName("utf-8")));
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "multiaddress/wallet_v3_5_m4.txt").toURI())), Charset.forName("utf-8")));
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, walletBase));
+        responseList.add(Pair.of(200, "{}"));
+        responseList.add(Pair.of(200, new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "multiaddress/wallet_v3_5_m1.txt").toURI())), Charset.forName("utf-8"))));
+        responseList.add(Pair.of(200, new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "multiaddress/wallet_v3_5_m2.txt").toURI())), Charset.forName("utf-8"))));
+        responseList.add(Pair.of(200, new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "multiaddress/wallet_v3_5_m3.txt").toURI())), Charset.forName("utf-8"))));
+        responseList.add(Pair.of(200, new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "multiaddress/wallet_v3_5_m4.txt").toURI())), Charset.forName("utf-8"))));
+        mockInterceptor.setResponseList(responseList);
 
         PayloadManager.getInstance().initializeAndDecrypt("06f6fa9c-d0fe-403d-815a-111ee26888e2", "4750d125-5344-4b79-9cf9-6e3c97bc9523", "MyTestWallet");
 
@@ -480,12 +404,12 @@ public class PayloadManagerTest extends MockedResponseTest {
         URI uri = getClass().getClassLoader().getResource("wallet_v3_6.txt").toURI();
         String walletBase = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add(walletBase);
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "balance/wallet_v3_6_balance.txt").toURI())), Charset.forName("utf-8")));
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, walletBase));
+        responseList.add(Pair.of(200, new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "balance/wallet_v3_6_balance.txt").toURI())), Charset.forName("utf-8"))));
 
-        mockInterceptor.setResponseStringList(responseList);
+        mockInterceptor.setResponseList(responseList);
 
         PayloadManager payloadManager = PayloadManager.getInstance();
         payloadManager.initializeAndDecrypt("any", "any", "MyTestWallet");
@@ -513,13 +437,13 @@ public class PayloadManagerTest extends MockedResponseTest {
         URI uri = getClass().getClassLoader().getResource("wallet_v3_6.txt").toURI();
         String walletBase = new String(Files.readAllBytes(Paths.get(uri)), Charset.forName("utf-8"));
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add(walletBase);
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "balance/wallet_v3_6_balance.txt").toURI())), Charset.forName("utf-8")));
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "multiaddress/wallet_v3_6_m1.txt").toURI())), Charset.forName("utf-8")));
-        mockInterceptor.setResponseStringList(responseList);
+        LinkedList<Pair> responseList = new LinkedList<>();
+        responseList.add(Pair.of(200, walletBase));
+        responseList.add(Pair.of(200, new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "balance/wallet_v3_6_balance.txt").toURI())), Charset.forName("utf-8"))));
+        responseList.add(Pair.of(200, new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "multiaddress/wallet_v3_6_m1.txt").toURI())), Charset.forName("utf-8"))));
+        mockInterceptor.setResponseList(responseList);
 
         PayloadManager payloadManager = PayloadManager.getInstance();
         payloadManager.initializeAndDecrypt("0f28735d-0b89-405d-a40f-ee3e85c3c78c", "5350e5d5-bd65-456f-b150-e6cc089f0b26", "MyTestWallet");
