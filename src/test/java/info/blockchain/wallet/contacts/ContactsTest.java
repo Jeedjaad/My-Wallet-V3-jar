@@ -20,6 +20,7 @@ import info.blockchain.wallet.metadata.data.Message;
 import info.blockchain.wallet.util.MetadataUtil;
 import info.blockchain.wallet.util.RestClient;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.params.AbstractBitcoinNetParams;
 import org.bitcoinj.params.MainNetParams;
@@ -336,15 +337,10 @@ public class ContactsTest {
     public void publishXpub() throws Exception {
         Contacts contacts = init();
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add(fail);//magic - string doesn't matter 404 will be caught
-        responseList.add(success);//put metadata
-        mockInterceptor.setResponseStringList(responseList);
-
-        LinkedList<Integer> responseCodeList = new LinkedList<>();
-        responseCodeList.add(404);//fetch magic - 404 = new magic hash
-        responseCodeList.add(200);
-        mockInterceptor.setResponseCodeList(responseCodeList);
+        LinkedList<Pair> responseCodeList = new LinkedList<>();
+        responseCodeList.add(Pair.of(404,fail));
+        responseCodeList.add(Pair.of(200,success));
+        mockInterceptor.setResponseList(responseCodeList);
 
         try {
             contacts.publishXpub();

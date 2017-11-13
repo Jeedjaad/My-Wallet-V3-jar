@@ -35,7 +35,6 @@ public class MockInterceptor implements Interceptor {
         return instance;
     }
 
-    @Deprecated
     public void setResponseStringList(LinkedList<String> responseStringList){
         this.responseStringList = responseStringList;
     }

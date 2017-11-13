@@ -6,6 +6,7 @@ import info.blockchain.api.data.UnspentOutputs;
 import info.blockchain.wallet.exceptions.HDWalletException;
 import info.blockchain.wallet.payment.Payment;
 import info.blockchain.wallet.payment.SpendableUnspentOutputs;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bitcoinj.core.Base58;
 import org.bitcoinj.core.ECKey;
 import org.json.JSONObject;
@@ -82,8 +83,8 @@ public class HDWalletTest extends MockedResponseTest {
 
         String mnemonic = "all all all all all all all all all all all all";
 
-        LinkedList<String> xpubs = new LinkedList<>();
-        xpubs.add("{\n"
+        LinkedList<Pair> xpubs = new LinkedList<>();
+        xpubs.add(Pair.of(200, "{\n"
             + "    \"xpub6BiVtCpG9fQQ77Qr7WArXSG3yWYm2bkRYpoSYtRkVEAk5nrcULBG8AeRYMMKVUXAsNeXdR7TGuL6SkUc4RF2YC7X4afLyZrT9NrrUFyotkH\": {\n"
             + "        \"final_balance\": 0,\n"
             + "        \"n_tx\": 23,\n"
@@ -109,8 +110,8 @@ public class HDWalletTest extends MockedResponseTest {
             + "        \"n_tx\": 20,\n"
             + "        \"total_received\": 15137242\n"
             + "    }\n"
-            + "}");
-        xpubs.add("{\n"
+            + "}"));
+        xpubs.add(Pair.of(200, "{\n"
             + "    \"xpub6BiVtCpG9fQQGq7bXBjjf5zyguEXHrmxDu4t7pdTFUtDWD5epi4ecKmWBTMHvPQtRmQnby8gET7ArTzxjL4SNYdD2RYSdjk7fwYeEDMzkce\": {\n"
             + "        \"final_balance\": 0,\n"
             + "        \"n_tx\": 2,\n"
@@ -161,8 +162,8 @@ public class HDWalletTest extends MockedResponseTest {
             + "        \"n_tx\": 0,\n"
             + "        \"total_received\": 0\n"
             + "    }\n"
-            + "}");
-        xpubs.add("{\n"
+            + "}"));
+        xpubs.add(Pair.of(200, "{\n"
             + "    \"xpub6BiVtCpG9fQR4Bp1D4k4P1a48uHPJPtHmnHjrvwpZgg47sJfg9e5wqjEVZs1YdhR3EsfWo16qPcA7fsk6Hzr5e8VAjNbgmVy67DGkoGJfv4\": {\n"
             + "        \"final_balance\": 0,\n"
             + "        \"n_tx\": 0,\n"
@@ -263,9 +264,9 @@ public class HDWalletTest extends MockedResponseTest {
             + "        \"n_tx\": 0,\n"
             + "        \"total_received\": 0\n"
             + "    }\n"
-            + "}");
-        xpubs.add("HDWallet successfully synced with server");
-        mockInterceptor.setResponseStringList(xpubs);
+            + "}"));
+        xpubs.add(Pair.of(200, "HDWallet successfully synced with server"));
+        mockInterceptor.setResponseList(xpubs);
 
         String label = "HDAccount 1";
         HDWallet hdWallet = HDWallet.recoverFromMnemonic(mnemonic, label);
@@ -279,8 +280,8 @@ public class HDWalletTest extends MockedResponseTest {
 
         String mnemonic = "all all all all all all all all all all all all";
 
-        LinkedList<String> xpubs = new LinkedList<>();
-        xpubs.add("{\n"
+        LinkedList<Pair> xpubs = new LinkedList<>();
+        xpubs.add(Pair.of(200, "{\n"
             + "    \"xpub6BvvF1nwmp51CapAefmDYrKWeGC2Y96TcGtB6BTfiTJezHLjBxgsWdKRvWWChGAhWPjdRjSUsDeEgnSar2xjenixNArkytRU2heAWr3HmQ5\": {\n"
             + "        \"final_balance\": 0,\n"
             + "        \"n_tx\": 0,\n"
@@ -306,8 +307,8 @@ public class HDWalletTest extends MockedResponseTest {
             + "        \"n_tx\": 0,\n"
             + "        \"total_received\": 0\n"
             + "    }\n"
-            + "}");
-        xpubs.add("{\n"
+            + "}"));
+        xpubs.add(Pair.of(200,"{\n"
             + "    \"xpub6BvvF1nwmp51N9UVeokUscF6vwT8TN35TSxQmW8GSJPgj7NQwUKrR9rZvug2KLeZf4SnviBmmqgtaWJstuMT18bcNpPttrhrBEWptdYHGcF\": {\n"
             + "        \"final_balance\": 0,\n"
             + "        \"n_tx\": 0,\n"
@@ -358,9 +359,9 @@ public class HDWalletTest extends MockedResponseTest {
             + "        \"n_tx\": 0,\n"
             + "        \"total_received\": 0\n"
             + "    }\n"
-            + "}");
-        xpubs.add("HDWallet successfully synced with server");
-        mockInterceptor.setResponseStringList(xpubs);
+            + "}"));
+        xpubs.add(Pair.of(200,"HDWallet successfully synced with server"));
+        mockInterceptor.setResponseList(xpubs);
 
         String label = "HDAccount 1";
         HDWallet hdWallet = HDWallet.recoverFromMnemonic(mnemonic, "somePassphrase", label);

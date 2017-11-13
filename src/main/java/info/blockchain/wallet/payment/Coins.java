@@ -23,6 +23,7 @@ class Coins {
 
     private static final Logger log = LoggerFactory.getLogger(Coins.class);
 
+    @SuppressWarnings("deprecation")
     public static Call<UnspentOutputs> getUnspentCoins(List<String> addresses) throws IOException {
         log.info("Fetching unspent coins");
         BlockExplorer blockExplorer = new BlockExplorer(BlockchainFramework.getRetrofitExplorerInstance(), BlockchainFramework.getApiCode());

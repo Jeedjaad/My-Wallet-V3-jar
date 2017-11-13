@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bitcoinj.core.Base58;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.DeterministicKey;
@@ -121,23 +122,21 @@ public class PayloadManagerTest extends MockedResponseTest {
 
         String mnemonic = "all all all all all all all all all all all all";
 
-        LinkedList<String> responseList = new LinkedList<>();
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "balance/wallet_all_balance_1.txt").toURI())), Charset.forName("utf-8")));
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "balance/wallet_all_balance_2.txt").toURI())), Charset.forName("utf-8")));
-        responseList.add(new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
-            "balance/wallet_all_balance_3.txt").toURI())), Charset.forName("utf-8")));
-        responseList.add("Save failed");
-        mockInterceptor.setResponseStringList(responseList);
+        String reply1 = new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "balance/wallet_all_balance_1.txt").toURI())), Charset.forName("utf-8"));
+        String reply2 = new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "balance/wallet_all_balance_2.txt").toURI())), Charset.forName("utf-8"));
+        String reply3 = new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(
+            "balance/wallet_all_balance_3.txt").toURI())), Charset.forName("utf-8"));
 
-        //checking if xpubs has txs succeeds but then savinf fails
-        LinkedList<Integer> codes = new LinkedList<>();
-        codes.add(200);
-        codes.add(200);
-        codes.add(200);
-        codes.add(500);
-        mockInterceptor.setResponseCodeList(codes);
+        //checking if xpubs has txs succeeds but then saving fails
+
+        LinkedList<Pair> responseCodeList = new LinkedList<>();
+        responseCodeList.add(Pair.of(200,reply1));
+        responseCodeList.add(Pair.of(200,reply2));
+        responseCodeList.add(Pair.of(200,reply3));
+        responseCodeList.add(Pair.of(500,"Save failed"));
+        mockInterceptor.setResponseList(responseCodeList);
 
         PayloadManager.getInstance().recoverFromMnemonic(mnemonic, "My HDWallet", "name@email.com", "SomePassword");
 

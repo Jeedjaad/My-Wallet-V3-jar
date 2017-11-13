@@ -7,6 +7,7 @@ import info.blockchain.wallet.api.Environment;
 import info.blockchain.wallet.util.RestClient;
 
 import java.util.LinkedList;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.params.AbstractBitcoinNetParams;
 import org.bitcoinj.params.MainNetParams;
@@ -85,16 +86,11 @@ public class MetadataNodeFactoryTest {
             }
         });
 
-        LinkedList<String> responses = new LinkedList<>();
-        responses.add("{\"payload\":\"iJ8bow3OHV3F0vN4hn1UpAI2GJ00362olaiq5LEFgo7aTjdnp4jtsObSqWUmqPWnWNKu06PJ9EVV4hQHTrS+USvqOH9XZz/Xz09Pc+V2BAsmAO49nRXvhSWjuOLieT7PZkvVkC4/y9E4hG+Xe8GwlqrKW7iTiHkjixArLif3qHeO0IudhAdx7ZazSYnIKKmN4HIxFMAqxUgFTmWyQ81pJ4y5Ja0i3HI6OiNXKXTwHisT9kIcQrWLouHUzRTbUeyjgHh5hafqZiQbqAAFcCYH/S71k1bGh3fk7Bx98nK9J3By9Q7SKXT1OPfREpucDryZkrtDxTtscHJrN98EcY6Tc+XzavR+kxlOpPVUbe0Ipbc=\",\"version\":1,\"type_id\":-1,\"signature\":\"H9r2rDp+M06rWJwi+rpK9K5xMxEkofQCA/aTL0CArDMJDC2677jrEB08ODMCDpuwvap3QZxxRLCTnBBUoP0zzgM=\",\"address\":\"17gRsYd7F8C5sqDRdkkzRfAZK84sTRt3vF\",\"created_at\":1501672559000,\"updated_at\":1501672559000}");
-        responses.add("{\"message\":\"Not Found\"}");
-        responses.add("{\"message\":\"Not Found\"}");
-        mockInterceptor.setResponseStringList(responses);
-        LinkedList<Integer> responseCodes = new LinkedList<>();
-        responseCodes.add(200);
-        responseCodes.add(404);
-        responseCodes.add(404);
-        mockInterceptor.setResponseCodeList(responseCodes);
+        LinkedList<Pair> responses = new LinkedList<>();
+        responses.add(Pair.of(200, "{\"payload\":\"iJ8bow3OHV3F0vN4hn1UpAI2GJ00362olaiq5LEFgo7aTjdnp4jtsObSqWUmqPWnWNKu06PJ9EVV4hQHTrS+USvqOH9XZz/Xz09Pc+V2BAsmAO49nRXvhSWjuOLieT7PZkvVkC4/y9E4hG+Xe8GwlqrKW7iTiHkjixArLif3qHeO0IudhAdx7ZazSYnIKKmN4HIxFMAqxUgFTmWyQ81pJ4y5Ja0i3HI6OiNXKXTwHisT9kIcQrWLouHUzRTbUeyjgHh5hafqZiQbqAAFcCYH/S71k1bGh3fk7Bx98nK9J3By9Q7SKXT1OPfREpucDryZkrtDxTtscHJrN98EcY6Tc+XzavR+kxlOpPVUbe0Ipbc=\",\"version\":1,\"type_id\":-1,\"signature\":\"H9r2rDp+M06rWJwi+rpK9K5xMxEkofQCA/aTL0CArDMJDC2677jrEB08ODMCDpuwvap3QZxxRLCTnBBUoP0zzgM=\",\"address\":\"17gRsYd7F8C5sqDRdkkzRfAZK84sTRt3vF\",\"created_at\":1501672559000,\"updated_at\":1501672559000}"));
+        responses.add(Pair.of(404, "{\"message\":\"Not Found\"}"));
+        responses.add(Pair.of(404, "{\"message\":\"Not Found\"}"));
+        mockInterceptor.setResponseList(responses);
         metadataNodeFactory = new MetadataNodeFactory(guid, sharedKey, walletPass);
     }
 

@@ -385,7 +385,7 @@ public class SharedMetadata {
         ECKey myKey = getNode();
         DeterministicKey otherKey = DeterministicKey.deserializeB58(null, xpub, PersistentUrls.getInstance().getCurrentNetworkParams());
 
-        byte[] sharedSecret = otherKey.getPubKeyPoint().multiply(myKey.getPrivKey()).getEncoded();
+        byte[] sharedSecret = otherKey.getPubKeyPoint().multiply(myKey.getPrivKey()).getEncoded(true);
         byte[] sharedKey = Sha256Hash.hash(sharedSecret);
         return new String(AESUtil.encryptWithKey(sharedKey, payload));
     }
@@ -397,7 +397,7 @@ public class SharedMetadata {
         ECKey myKey = getNode();
         DeterministicKey otherKey = DeterministicKey.deserializeB58(null, xpub, PersistentUrls.getInstance().getCurrentNetworkParams());
 
-        byte[] sharedSecret = otherKey.getPubKeyPoint().multiply(myKey.getPrivKey()).getEncoded();
+        byte[] sharedSecret = otherKey.getPubKeyPoint().multiply(myKey.getPrivKey()).getEncoded(true);
         byte[] sharedKey = Sha256Hash.hash(sharedSecret);
         return AESUtil.decryptWithKey(sharedKey, payload);
     }

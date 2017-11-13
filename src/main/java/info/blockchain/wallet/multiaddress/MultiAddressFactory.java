@@ -56,6 +56,7 @@ public class MultiAddressFactory {
         return addressToXpubMap.get(address);
     }
 
+    @SuppressWarnings("deprecation")
     private MultiAddress getMultiAddress(List<String> allActive, String onlyShow, int limit, int offset) throws IOException, ApiException{
 
         log.info("Fetching multiaddress for {} accounts/addresses", allActive.size());

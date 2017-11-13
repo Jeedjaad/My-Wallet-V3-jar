@@ -1,7 +1,11 @@
 package info.blockchain.wallet.bip44;
 
+import com.google.common.collect.Lists;
 import info.blockchain.wallet.bip44.HDWalletFactory.Language;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.crypto.MnemonicException;
 import org.bitcoinj.params.MainNetParams;
@@ -20,7 +24,7 @@ public class WalletFactoryTest {
         HDWallet wallet = HDWalletFactory
             .createWallet(MainNetParams.get(), Language.US, mnemonicLength, passphrase, 1);
 
-        Assert.assertEquals(mnemonicLength, wallet.getMnemonicOld().split(" ").length);
+        Assert.assertEquals(mnemonicLength, wallet.getMnemonic().size());
         Assert.assertEquals(passphrase, wallet.getPassphrase());
         Assert.assertEquals(1, wallet.getAccounts().size());
         Assert.assertEquals(path, wallet.getPath());
@@ -30,6 +34,8 @@ public class WalletFactoryTest {
     public void testRestoreWallet_mnemonic() {
 
         String mnemonic = "all all all all all all all all all all all all";
+        List<String> mnemonicList = Arrays.asList(mnemonic.split(" "));
+
         String passphrase = "myPassPhrase";
         int accountListSize = 4;
 
@@ -50,7 +56,7 @@ public class WalletFactoryTest {
         Assert.assertEquals(16, wallet.getSeed().length);
         Assert.assertEquals("0660cc198330660cc198330660cc1983", wallet.getSeedHex());
         Assert.assertEquals("M/44H", wallet.getPath());
-        Assert.assertEquals(mnemonic, wallet.getMnemonicOld());
+        Assert.assertEquals(mnemonicList, wallet.getMnemonic());
         Assert.assertEquals(passphrase, wallet.getPassphrase());
 
         //HDAccount
