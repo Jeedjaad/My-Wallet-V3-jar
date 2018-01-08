@@ -7,6 +7,11 @@ import info.blockchain.wallet.api.WalletApi;
 import info.blockchain.wallet.api.data.Fee;
 import info.blockchain.wallet.api.data.FeeList;
 import io.reactivex.Observable;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
+import javax.annotation.Nonnull;
 import okhttp3.ResponseBody;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bitcoinj.core.AddressFormatException;
@@ -16,12 +21,6 @@ import org.bitcoinj.core.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Call;
-
-import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.List;
 
 @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
 public class Payment {
@@ -103,13 +102,17 @@ public class Payment {
     public Transaction makeSimpleTransaction(@Nonnull List<UnspentOutput> unspentCoins,
                                               @Nonnull HashMap<String, BigInteger> receivingAddresses,
                                               @Nonnull BigInteger fee,
-                                              @Nonnull String changeAddress)
+                                              String changeAddress)
             throws InsufficientMoneyException, AddressFormatException {
         return PaymentTx.makeSimpleTransaction(unspentCoins, receivingAddresses, fee, changeAddress);
     }
 
     public void signSimpleTransaction(@Nonnull Transaction transaction, @Nonnull List<ECKey> keys) {
-        PaymentTx.signSimpleTransaction(transaction, keys);
+        PaymentTx.signSimpleTransaction(transaction, keys, false);
+    }
+
+    public void signBCHTransaction(@Nonnull Transaction transaction, @Nonnull List<ECKey> keys) {
+        PaymentTx.signSimpleTransaction(transaction, keys, true);
     }
 
     public Call<ResponseBody> publishSimpleTransaction(@Nonnull Transaction transaction)

@@ -1,8 +1,5 @@
 package info.blockchain.wallet.payload.data;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -10,7 +7,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import info.blockchain.api.blockexplorer.BlockExplorer;
 import info.blockchain.api.blockexplorer.FilterType;
 import info.blockchain.api.data.Balance;
@@ -26,7 +24,14 @@ import info.blockchain.wallet.exceptions.HDWalletException;
 import info.blockchain.wallet.payment.SpendableUnspentOutputs;
 import info.blockchain.wallet.util.DoubleEncryptionFactory;
 import info.blockchain.wallet.util.PrivateKeyFactory;
-
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Nullable;
 import org.apache.commons.codec.DecoderException;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.DeterministicKey;
@@ -35,17 +40,6 @@ import org.bitcoinj.crypto.MnemonicException.MnemonicLengthException;
 import org.bitcoinj.crypto.MnemonicException.MnemonicWordException;
 import org.spongycastle.crypto.InvalidCipherTextException;
 import org.spongycastle.util.encoders.Hex;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import retrofit2.Response;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -96,7 +90,7 @@ public class HDWallet {
                 iterations);
 
             HD = HDWalletFactory
-                .restoreWallet(PersistentUrls.getInstance().getCurrentNetworkParams(),
+                .restoreWallet(PersistentUrls.getInstance().getBitcoinParams(),
                     Language.US,
                     decryptedSeedHex,
                     getPassphrase(),
@@ -112,7 +106,7 @@ public class HDWallet {
             int walletSize = DEFAULT_NEW_WALLET_SIZE;
             if(accounts != null) walletSize = accounts.size();
             HD = HDWalletFactory
-                .restoreWallet(PersistentUrls.getInstance().getCurrentNetworkParams(), Language.US,
+                .restoreWallet(PersistentUrls.getInstance().getBitcoinParams(), Language.US,
                     getSeedHex(), getPassphrase(), walletSize);
         } catch (Exception e) {
 
@@ -122,7 +116,7 @@ public class HDWallet {
             }
 
             HD = HDWalletFactory
-                .restoreWatchOnlyWallet(PersistentUrls.getInstance().getCurrentNetworkParams(),
+                .restoreWatchOnlyWallet(PersistentUrls.getInstance().getBitcoinParams(),
                     xpubList);
         }
 
@@ -154,7 +148,7 @@ public class HDWallet {
     public HDWallet(String defaultAccountName) throws Exception {
 
         this.HD = HDWalletFactory
-            .createWallet(PersistentUrls.getInstance().getCurrentNetworkParams(), Language.US,
+            .createWallet(PersistentUrls.getInstance().getBitcoinParams(), Language.US,
                 DEFAULT_MNEMONIC_LENGTH, DEFAULT_PASSPHRASE, DEFAULT_NEW_WALLET_SIZE);
 
         List<HDAccount> hdAccounts = this.HD.getAccounts();
@@ -332,7 +326,7 @@ public class HDWallet {
         //Start with initial wallet size of 1.
         //After wallet is recovered we'll check how many accounts to restore
         info.blockchain.wallet.bip44.HDWallet bip44Wallet = HDWalletFactory
-            .restoreWallet(PersistentUrls.getInstance().getCurrentNetworkParams(), Language.US,
+            .restoreWallet(PersistentUrls.getInstance().getBitcoinParams(), Language.US,
                 mnemonic, passphrase, DEFAULT_NEW_WALLET_SIZE);
 
         BlockExplorer blockExplorer = new BlockExplorer(
@@ -348,7 +342,7 @@ public class HDWallet {
         }
 
         bip44Wallet = HDWalletFactory
-            .restoreWallet(PersistentUrls.getInstance().getCurrentNetworkParams(), Language.US,
+            .restoreWallet(PersistentUrls.getInstance().getBitcoinParams(), Language.US,
                 mnemonic, passphrase, walletSize);
 
         //Set accounts
